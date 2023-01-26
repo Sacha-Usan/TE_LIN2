@@ -1,0 +1,33 @@
+version: '3'
+networks:
+  tp-docker:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
+services:
+  lin2-server:
+    image: lin2-server
+    build:
+      context: ./api-server/
+      dockerfile: Dockerfile
+    container_name: lin2-server
+    restart: unless-stopped
+    networks:
+      tp-docker:
+        ipv4_address: 172.28.0.10
+    ports:
+      - 5000:5000
+  lin2-client:
+    image: lin2-client
+    build:
+      context: ./api-client/
+      dockerfile: Dockerfile
+    container_name: lin2-client
+    restart: unless-stopped
+    networks:
+      tp-docker:
+        ipv4_address: 172.28.0.20
+    ports:
+      - 5001:5001
+    depends_on:
+      - lin2-server
